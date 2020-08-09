@@ -9,7 +9,7 @@ clean:
 	rm -rf cmd/r53updater/r53updater
 
 docker:
-	docker build  --force-rm  -t r53updater:$(TAG)  -f Dockerfile  .
+	docker build  --network host  --force-rm  -t r53updater:$(TAG)  -f Dockerfile  .
 
 install:
 	cp cmd/r53updater/r53updater  /usr/local/bin
