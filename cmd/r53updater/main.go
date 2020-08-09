@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -69,6 +70,11 @@ func main() {
 		}
 
 		if ipCurrent != ipPrevious {
+			if net.ParseIP(ipCurrent) != nil {
+				log.Printf("ignoring invalid ip returned: %s", ipCurrent)
+				continue
+			}
+
 			log.Printf("ip has changed from %s to %s\n", ipPrevious, ipCurrent)
 
 			ipPrevious = ipCurrent
