@@ -66,13 +66,13 @@ func main() {
 
 		ipCurrent, err := ip.Fetch()
 		if err != nil {
-			continue
+			goto Timer
 		}
 
 		if ipCurrent != ipPrevious {
-			if net.ParseIP(ipCurrent) != nil {
+			if net.ParseIP(ipCurrent) == nil {
 				log.Printf("ignoring invalid ip returned: %s", ipCurrent)
-				continue
+				goto Timer
 			}
 
 			log.Printf("ip has changed from %s to %s\n", ipPrevious, ipCurrent)
@@ -81,6 +81,7 @@ func main() {
 			route53Update(sess, cfg.zone, cfg.fqdn, ipCurrent)
 		}
 
+	Timer:
 		select {
 		case <-tick:
 			continue
