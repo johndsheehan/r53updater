@@ -45,7 +45,10 @@ func route53Update(sess *session.Session, zone, fqdn, ip string) {
 func main() {
 	cfg := NewConfig()
 
-	sess, err := session.NewSession()
+	sess, err := session.NewSessionWithOptions(session.Options{
+		Profile: cfg.profile,
+	})
+
 	if err != nil {
 		log.Fatal(err)
 	}

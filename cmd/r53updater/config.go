@@ -9,14 +9,16 @@ import (
 
 // Config cmdline config struct
 type Config struct {
-	fqdn string
-	zone string
-	tick int
+	fqdn    string
+	profile string
+	zone    string
+	tick    int
 }
 
 // NewConfig parse cmdline args and env vars for config
 func NewConfig() Config {
 	cmdFQDN := flag.String("fqdn", "", "fqdn")
+	cmdProfile := flag.String("profile", "", "aws profile")
 	cmdZone := flag.String("zone", "", "aws route53 zone")
 	cmdTick := flag.Int("tick", 600, "interval in seconds between each ip check")
 
@@ -32,6 +34,16 @@ func NewConfig() Config {
 		}
 	}
 
+	profile := "default"
+	if *cmdProfile != "" {
+		profile = *cmdProfile
+	} else {
+		tmp := os.Getenv("AWSPROFILE")
+		if tmp != "" {
+			profile = tmp
+		}
+	}
+
 	zone := ""
 	if *cmdZone != "" {
 		zone = *cmdZone
@@ -43,8 +55,9 @@ func NewConfig() Config {
 	}
 
 	return Config{
-		fqdn: fqdn,
-		zone: zone,
-		tick: *cmdTick,
+		fqdn:    fqdn,
+		profile: profile,
+		zone:    zone,
+		tick:    *cmdTick,
 	}
 }
