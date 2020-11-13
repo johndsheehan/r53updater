@@ -10,6 +10,16 @@ import (
 	"github.com/aws/aws-sdk-go/service/route53"
 )
 
+func newAWSSession(profile string) (*session.Session, error) {
+	if profile != "" {
+		return session.NewSessionWithOptions(session.Options{
+			Profile: profile,
+		})
+	}
+
+	return session.NewSession()
+}
+
 func route53Update(sess *session.Session, zone, fqdn, ip string) {
 	r53 := route53.New(sess)
 
@@ -45,10 +55,7 @@ func route53Update(sess *session.Session, zone, fqdn, ip string) {
 func main() {
 	cfg := NewConfig()
 
-	sess, err := session.NewSessionWithOptions(session.Options{
-		Profile: cfg.profile,
-	})
-
+	sess, err := newAWSSession(cfg.profile)
 	if err != nil {
 		log.Fatal(err)
 	}

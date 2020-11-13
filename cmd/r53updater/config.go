@@ -34,7 +34,7 @@ func NewConfig() Config {
 		}
 	}
 
-	profile := "default"
+	profile := ""
 	if *cmdProfile != "" {
 		profile = *cmdProfile
 	} else {
