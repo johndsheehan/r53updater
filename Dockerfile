@@ -1,10 +1,9 @@
-FROM golang:1.14-alpine as builder
+FROM golang:1.15-buster as builder
   
-RUN apk update  \
- && apk add  --no-cache  upx  git  ca-certificates  tzdata  \
- && update-ca-certificates  \
- && addgroup  --system user  \
- && adduser  -S -G  user  user
+RUN apt-get update  \
+ && apt-get install  -y  upx  git  ca-certificates  tzdata  \
+ && groupadd  -g 1001 user  \
+ && useradd  -u 1001  -g user  user
 
 WORKDIR /app
 
@@ -22,8 +21,8 @@ FROM scratch
 COPY --from=builder  /usr/share/zoneinfo  /usr/share/zoneinfo
 COPY --from=builder  /etc/ssl/certs/ca-certificates.crt  /etc/ssl/certs/
 COPY --from=builder  /etc/passwd  /etc/passwd
-COPY --from=builder  /tmp/app  /home/user/r53updater
+COPY --from=builder  /tmp/app  /app/r53updater
 
 USER user 
 
-ENTRYPOINT ["/home/user/r53updater"]
+ENTRYPOINT ["/app/r53updater"]
